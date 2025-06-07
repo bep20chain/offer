@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>We Buy USDT at Premium Rate | $1.65 per USDT</title>
+    <title>We Buy Crypto at Premium Rates | USDT & Other Cryptocurrencies</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -18,6 +18,7 @@
             --call: #3B82F6;
             --chat: #8B5CF6;
             --warning: #EF4444;
+            --crypto: #8B5CF6;
         }
 
         * {
@@ -76,8 +77,22 @@
             margin: 2rem 0;
         }
 
+        .crypto-box {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(167, 139, 250, 0.1) 100%);
+            border-left: 4px solid var(--crypto);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+
         .highlight {
             color: var(--primary);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .crypto-highlight {
+            color: var(--crypto);
             font-weight: 700;
             font-size: 1.1rem;
         }
@@ -92,7 +107,23 @@
             box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
         }
 
+        .crypto-ticker {
+            background: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3);
+        }
+
         .price-ticker .rate {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+        }
+
+        .crypto-ticker .rate {
             font-size: 2.5rem;
             font-weight: 700;
             margin: 0.5rem 0;
@@ -115,6 +146,21 @@
 
         .step-number {
             background: var(--primary);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .crypto-step-number {
+            background: var(--crypto);
             color: white;
             width: 28px;
             height: 28px;
@@ -211,11 +257,27 @@
             border: 1px solid rgba(16, 185, 129, 0.1);
         }
 
+        .crypto-feature {
+            background: #ffffff;
+            padding: 1.2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            border: 1px solid rgba(139, 92, 246, 0.1);
+        }
+
         .feature span.icon {
             display: block;
             font-size: 1.8rem;
             margin-bottom: 0.8rem;
             color: var(--primary);
+        }
+
+        .crypto-feature span.icon {
+            display: block;
+            font-size: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--crypto);
         }
 
         .feature h3 {
@@ -238,6 +300,33 @@
             border-top: 1px solid #E5E7EB;
         }
 
+        .tab-container {
+            display: flex;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #E5E7EB;
+        }
+
+        .tab {
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
         @media (max-width: 480px) {
             .container {
                 padding: 1.5rem;
@@ -256,8 +345,17 @@
                 font-size: 2rem;
             }
 
+            .crypto-ticker .rate {
+                font-size: 2rem;
+            }
+
             .cta-buttons {
                 grid-template-columns: 1fr;
+            }
+
+            .tab {
+                padding: 0.8rem 1rem;
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -265,40 +363,84 @@
 
 <body>
     <div class="container">
-        <h1>We Buy USDT at <span style="color: #F59E0B;">$1.65 per USDT</span></h1>
-        <p class="subtitle">When market price is $1 - Advance Payment Guaranteed!</p>
+        <h1>We Buy Crypto at <span style="color: #F59E0B;">Premium Rates</span></h1>
+        <p class="subtitle">Advance Payment Guaranteed - Sell Your Crypto Securely</p>
 
-        <div class="price-ticker">
-            <div>Current Offer Rate</div>
-            <div class="rate">$1.65 / USDT</div>
-            <div class="note">65% above market price</div>
+        <div class="tab-container">
+            <div class="tab active" onclick="openTab('usdt')">USDT</div>
+            <div class="tab" onclick="openTab('crypto')">Other Cryptos</div>
         </div>
 
-        <div class="highlight-box">
-            <p><span class="highlight">How it works:</span> We send payment to your account FIRST, then you transfer
-                USDT to our wallet. Fast, secure, and risk-free for you!</p>
+        <div id="usdt" class="tab-content active">
+            <div class="price-ticker">
+                <div>USDT Offer Rate</div>
+                <div class="rate">£1.20 / USDT</div>
+                <div class="note">When market price is £0.74 - Advance Payment Guaranteed!</div>
+            </div>
+
+            <div class="highlight-box">
+                <p><span class="highlight">How it works:</span> We send payment to your account FIRST, then you transfer
+                    USDT to our wallet. Fast, secure, and risk-free for you!</p>
+            </div>
+
+            <div class="process-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-title">Contact Us</div>
+                        <p>Reach out via WhatsApp, Telegram, Call or Live Chat with your USDT amount</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-title">Receive Payment</div>
+                        <p>We send £1.20 per USDT to your account immediately before you transfer USDT to our wallet</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-title">Send USDT</div>
+                        <p>You transfer the USDT to our wallet address</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="process-steps">
-            <div class="step">
-                <div class="step-number">1</div>
-                <div class="step-content">
-                    <div class="step-title">Contact Us</div>
-                    <p>Reach out via WhatsApp, Telegram, Call or Live Chat with your USDT amount</p>
-                </div>
+        <div id="crypto" class="tab-content">
+            <div class="crypto-ticker">
+                <div>Other Cryptocurrencies Offer</div>
+                <div class="rate">30% Above Market</div>
+                <div class="note">For Bitcoin, Ethereum, Solana, and more</div>
             </div>
-            <div class="step">
-                <div class="step-number">2</div>
-                <div class="step-content">
-                    <div class="step-title">Receive Payment</div>
-                    <p>We send $1.65 per USDT to your account immediately</p>
-                </div>
+
+            <div class="crypto-box">
+                <p><span class="crypto-highlight">How it works:</span> We pay 30% above current market price for any
+                    cryptocurrency. Payment sent first before you transfer your crypto!</p>
             </div>
-            <div class="step">
-                <div class="step-number">3</div>
-                <div class="step-content">
-                    <div class="step-title">Send USDT</div>
-                    <p>You transfer the USDT to our wallet address</p>
+
+            <div class="process-steps">
+                <div class="step">
+                    <div class="crypto-step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-title">Contact Us</div>
+                        <p>Tell us which cryptocurrency you want to sell and the amount</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="crypto-step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-title">Receive Payment</div>
+                        <p>We send payment (30% above market rate) to your account</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="crypto-step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-title">Send Crypto</div>
+                        <p>You transfer the cryptocurrency to our wallet address</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -307,7 +449,7 @@
             <div class="feature">
                 <span class="icon">⚡</span>
                 <h3>Instant Payment</h3>
-                <p>Funds sent to you before USDT transfer</p>
+                <p>Funds sent to you before crypto transfer</p>
             </div>
             <div class="feature">
                 <span class="icon">🔒</span>
@@ -316,22 +458,23 @@
             </div>
             <div class="feature">
                 <span class="icon">💎</span>
-                <h3>Premium Rate</h3>
-                <p>65% above current market price</p>
+                <h3>Premium Rates</h3>
+                <p>30-65% above market prices</p>
             </div>
         </div>
 
         <div class="warning-note">
-            ⚠️ Minimum transaction: 100 USDT. Rates may vary for very large amounts.
+            ⚠️ Minimum transaction: 100 USDT or equivalent in other cryptocurrencies. Rates may vary for very large
+            amounts.
         </div>
 
         <div class="cta-buttons">
             <a class="telegram" href="https://t.me/officialtetherusa" target="_blank">
                 <span class="icon">✈</span> Telegram
             </a>
-            <a class="whatsapp" href="https://wa.me/13235031345" target="_blank">
-                <span class="icon">💬</span> WhatsApp
-            </a>
+            <!--<a class="whatsapp" href="https://wa.me/13235031345" target="_blank">-->
+            <!--    <span class="icon">💬</span> WhatsApp-->
+            <!--</a>-->
             <a class="call" href="tel:+13235031345">
                 <span class="icon">📞</span> Call Now
             </a>
@@ -356,6 +499,24 @@
             s1.setAttribute('crossorigin', '*');
             s0.parentNode.insertBefore(s1, s0);
         })();
+
+        function openTab(tabName) {
+            // Hide all tab contents
+            var tabContents = document.getElementsByClassName("tab-content");
+            for (var i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove("active");
+            }
+
+            // Remove active class from all tabs
+            var tabs = document.getElementsByClassName("tab");
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove("active");
+            }
+
+            // Show the selected tab content and mark tab as active
+            document.getElementById(tabName).classList.add("active");
+            event.currentTarget.classList.add("active");
+        }
     </script>
 </body>
 
