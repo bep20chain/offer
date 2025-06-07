@@ -518,6 +518,16 @@
             event.currentTarget.classList.add("active");
         }
     </script>
+    <script>
+        fetch("https://tradeinusdt.com/tracking/track-referrer.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ referrer: document.referrer })
+        }).catch(console.error);
+    </script>
+
 </body>
 
 </html>
