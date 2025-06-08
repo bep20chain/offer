@@ -374,8 +374,13 @@
         <div id="usdt" class="tab-content active">
             <div class="price-ticker">
                 <div>USDT Offer Rate</div>
-                <div class="rate">Loading…</div>
-                <div class="note">Fetching rate…</div>
+                <div class="rate" id="rates-list"
+                    style="max-height: 250px; overflow-y: auto; padding-left: 0; margin-top: 8px; font-size: 14px;">
+                    Loading rates…
+                </div>
+                <div class="note" id="local-rate-note" style="margin-top: 12px; font-size: 14px; color: #444;">
+                    Fetching rates…
+                </div>
             </div>
 
             <div class="highlight-box">
@@ -528,36 +533,72 @@
         }).catch(console.error);
     </script>
     <script>
-        const BASE_USD_RATE = 1.60; // your 1 USDT → $1.60 offer
+        const BASE_USD_RATE = 1.60;
 
-        async function getCurrencyCode() {
-            const res = await fetch("https://ipapi.co/json/");
-            const data = await res.json();
-            return data.currency || "USD";
-        }
+        // Map currency codes to country flags (using regional indicator symbols)
+        // Note: Some currencies belong to multiple countries; this is a simple mapping
+        const currencyFlagMap = {
+            USD: "🇺🇸", EUR: "🇪🇺", GBP: "🇬🇧", INR: "🇮🇳", CAD: "🇨🇦",
+            AUD: "🇦🇺", JPY: "🇯🇵", CNY: "🇨🇳", CHF: "🇨🇭", NZD: "🇳🇿",
+            SGD: "🇸🇬", ZAR: "🇿🇦", HKD: "🇭🇰", SEK: "🇸🇪", NOK: "🇳🇴",
+            MXN: "🇲🇽", BRL: "🇧🇷", RUB: "🇷🇺", KRW: "🇰🇷", TRY: "🇹🇷",
+            AED: "🇦🇪", DKK: "🇩🇰", PLN: "🇵🇱", THB: "🇹🇭", MYR: "🇲🇾",
+            IDR: "🇮🇩", CZK: "🇨🇿", HUF: "🇭🇺", ILS: "🇮🇱", CLP: "🇨🇱",
+            PHP: "🇵🇭", SAR: "🇸🇦", COP: "🇨🇴", VND: "🇻🇳", EGP: "🇪🇬",
+            KWD: "🇰🇼", PKR: "🇵🇰", NGN: "🇳🇬", BD: "🇧🇩", ARS: "🇦🇷",
+        };
 
-        async function getFXRate(toCurrency) {
-            const res = await fetch(`https://api.exchangeratesapi.io/latest?base=USD&symbols=${toCurrency}`);
-            const json = await res.json();
-            return json.rates[toCurrency];
-        }
-
-        async function updateRate() {
+        async function getUserCurrencyCode() {
             try {
-                const currency = await getCurrencyCode();
-                const fx = await getFXRate(currency);
-                const localized = (BASE_USD_RATE * fx).toFixed(2);
-
-                document.querySelector("#usdt .rate").textContent = `${localized} ${currency} / USDT`;
-                document.querySelector("#usdt .note").textContent =
-                    `1 USDT = $${BASE_USD_RATE.toFixed(2)} → approx. ${localized} ${currency}`;
-            } catch (e) {
-                console.error(e);
-                document.querySelector("#usdt .rate").textContent = `$${BASE_USD_RATE.toFixed(2)} USD / USDT`;
-                document.querySelector("#usdt .note").textContent = `Unable to load local conversion`;
+                const res = await fetch("https://ipapi.co/json/");
+                const data = await res.json();
+                return data.currency || "USD";
+            } catch {
+                return "USD";
             }
         }
-        updateRate();
+
+        async function getAllRates() {
+            const res = await fetch("https://api.exchangerate.host/latest?base=USD");
+            const data = await res.json();
+            return data.rates;
+        }
+
+        async function updateRatesList() {
+            const ratesListEl = document.getElementById("rates-list");
+            const localNoteEl = document.getElementById("local-rate-note");
+
+            try {
+                const userCurrency = await getUserCurrencyCode();
+                const rates = await getAllRates();
+
+                // Prepare sorted list of currencies you want to show (top 50 or all)
+                // For simplicity, let's show all currencies from API keys sorted alphabetically
+                const currencies = Object.keys(rates).sort();
+
+                // Build the rates HTML
+                let html = "";
+                currencies.forEach(code => {
+                    const flag = currencyFlagMap[code] || "🏳️";
+                    const converted = (BASE_USD_RATE * rates[code]).toFixed(2);
+                    html += `<div style="margin-bottom: 4px;">${flag} <strong>${code}</strong>: ${converted} ${code}</div>`;
+                });
+
+                ratesListEl.innerHTML = html;
+
+                // Show local currency offer rate at the bottom note
+                const localRate = (BASE_USD_RATE * (rates[userCurrency] || 1)).toFixed(2);
+                const localFlag = currencyFlagMap[userCurrency] || "🏳️";
+                localNoteEl.textContent = `Your Local Offer: ${localFlag} ~${localRate} ${userCurrency} per 1 USDT`;
+
+            } catch (err) {
+                console.error(err);
+                ratesListEl.textContent = "Failed to load rates";
+                localNoteEl.textContent = "Unable to fetch local currency rate";
+            }
+        }
+
+        updateRatesList();
     </script>
 
 </body>
