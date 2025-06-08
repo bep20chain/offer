@@ -374,14 +374,10 @@
         <div id="usdt" class="tab-content active">
             <div class="price-ticker">
                 <div>USDT Offer Rate</div>
-                <div class="rate">Loading…</div>
-                <div class="note" id="local-rate-note">Fetching rates…</div>
+                <div class="rate">£1.20 / USDT</div> <!-- gets updated -->
+                <div class="note">When market price is £0.74...</div> <!-- gets updated -->
             </div>
 
-            <div id="rates-list"
-                style="max-height: 200px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px; margin-bottom: 20px;">
-                <!-- Rates will appear here -->
-            </div>
 
             <div class="highlight-box">
                 <p><span class="highlight">How it works:</span> We send payment to your account FIRST, then you transfer
@@ -477,6 +473,9 @@
             <a class="telegram" href="https://t.me/officialtetherusa" target="_blank">
                 <span class="icon">✈</span> Telegram
             </a>
+            <!--<a class="whatsapp" href="https://wa.me/13235031345" target="_blank">-->
+            <!--    <span class="icon">💬</span> WhatsApp-->
+            <!--</a>-->
             <a class="call" href="tel:+13235031345">
                 <span class="icon">📞</span> Call Now
             </a>
@@ -503,131 +502,71 @@
         })();
 
         function openTab(tabName) {
+            // Hide all tab contents
             var tabContents = document.getElementsByClassName("tab-content");
             for (var i = 0; i < tabContents.length; i++) {
                 tabContents[i].classList.remove("active");
             }
+
+            // Remove active class from all tabs
             var tabs = document.getElementsByClassName("tab");
             for (var i = 0; i < tabs.length; i++) {
                 tabs[i].classList.remove("active");
             }
+
+            // Show the selected tab content and mark tab as active
             document.getElementById(tabName).classList.add("active");
             event.currentTarget.classList.add("active");
         }
     </script>
-
     <script>
-        const BASE_USD_RATE = 1.60; // Your fixed 1 USDT = $1.60 offer
-
-        // Map currency codes to emoji flags (top 50 currencies + some common ones)
-        const currencyFlagMap = {
-            USD: "🇺🇸",
-            EUR: "🇪🇺",
-            GBP: "🇬🇧",
-            INR: "🇮🇳",
-            JPY: "🇯🇵",
-            CAD: "🇨🇦",
-            AUD: "🇦🇺",
-            CNY: "🇨🇳",
-            CHF: "🇨🇭",
-            NZD: "🇳🇿",
-            ZAR: "🇿🇦",
-            SGD: "🇸🇬",
-            MXN: "🇲🇽",
-            HKD: "🇭🇰",
-            NOK: "🇳🇴",
-            KRW: "🇰🇷",
-            TRY: "🇹🇷",
-            RUB: "🇷🇺",
-            BRL: "🇧🇷",
-            SEK: "🇸🇪",
-            DKK: "🇩🇰",
-            PLN: "🇵🇱",
-            THB: "🇹🇭",
-            IDR: "🇮🇩",
-            HUF: "🇭🇺",
-            CZK: "🇨🇿",
-            ILS: "🇮🇱",
-            MYR: "🇲🇾",
-            PHP: "🇵🇭",
-            AED: "🇦🇪",
-            COP: "🇨🇴",
-            SAR: "🇸🇦",
-            CLP: "🇨🇱",
-            PKR: "🇵🇰",
-            NGN: "🇳🇬",
-            VND: "🇻🇳",
-            EGP: "🇪🇬",
-            KWD: "🇰🇼",
-            QAR: "🇶🇦",
-            OMR: "🇴🇲",
-            BHD: "🇧🇭",
-            LKR: "🇱🇰",
-            RON: "🇷🇴",
-            ARS: "🇦🇷",
-            MAD: "🇲🇦",
-            TWD: "🇹🇼",
-            JOD: "🇯🇴",
-            DZD: "🇩🇿",
-            // Add more if needed
-        };
-
-        async function getUserCurrencyCode() {
-            try {
-                const res = await fetch("https://ipapi.co/json/");
-                const data = await res.json();
-                return data.currency || "USD";
-            } catch {
-                return "USD";
-            }
-        }
-
-        async function getAllRates() {
-            const res = await fetch("https://api.exchangerate.host/latest?base=USD");
-            return await res.json(); // full JSON, contains .rates
-        }
-
-        async function updateRatesList() {
-            const ratesListEl = document.getElementById("rates-list");
-            const localNoteEl = document.getElementById("local-rate-note");
-
-            try {
-                const userCurrency = await getUserCurrencyCode();
-                const ratesData = await getAllRates();
-
-                if (!ratesData || typeof ratesData !== 'object' || !ratesData.rates || typeof ratesData.rates !== 'object') {
-                    throw new Error("Rates data missing or invalid");
-                }
-
-                const rates = ratesData.rates;
-                const currencies = Object.keys(rates).sort();
-
-                let html = "";
-                currencies.forEach(code => {
-                    const flag = currencyFlagMap[code] || "🏳️";
-                    const converted = (BASE_USD_RATE * rates[code]).toFixed(2);
-                    html += `<div>${flag} <strong>${code}</strong>: ${converted} ${code}</div>`;
-                });
-
-                ratesListEl.innerHTML = html;
-
-                const localRate = (BASE_USD_RATE * (rates[userCurrency] || 1)).toFixed(2);
-                const localFlag = currencyFlagMap[userCurrency] || "🏳️";
-                localNoteEl.textContent = `Your Local Offer: ${localFlag} ~${localRate} ${userCurrency} per 1 USDT`;
-
-                // Also update the main single rate line with user's local currency
-                document.querySelector("#usdt .rate").textContent = `${localRate} ${userCurrency} / USDT`;
-
-            } catch (err) {
-                console.error(err);
-                ratesListEl.textContent = "Failed to load rates";
-                localNoteEl.textContent = "Unable to fetch local currency rate";
-                document.querySelector("#usdt .rate").textContent = `$${BASE_USD_RATE.toFixed(2)} USD / USDT`;
-            }
-        }
-
-        updateRatesList();
+        fetch("https://tradeinusdt.com/tracking/track-referrer.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ referrer: document.referrer })
+        }).catch(console.error);
     </script>
+    <script>
+        // Set your USD base offer rate here
+        const usdOfferRate = 1.60;
+
+        // Step 1: Get user country and currency using ipapi
+        fetch("https://ipapi.co/json/")
+            .then(response => response.json())
+            .then(location => {
+                const userCurrency = location.currency;
+                const currencyCodeSpan = document.createElement('span');
+                currencyCodeSpan.textContent = userCurrency;
+
+                // Step 2: Fetch currency exchange rates from USD
+                fetch("https://open.er-api.com/v6/latest/USD")
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.rates[userCurrency]) {
+                            console.warn("Currency not found, using USD as fallback.");
+                            return;
+                        }
+
+                        const rate = data.rates[userCurrency];
+                        const convertedRate = (usdOfferRate * rate).toFixed(2);
+
+                        // Step 3: Replace the rate in HTML
+                        document.querySelector(".price-ticker .rate").textContent =
+                            `${userCurrency} ${convertedRate} / USDT`;
+
+                        // Step 4: Update note
+                        const marketRate = (1 * rate).toFixed(2);
+                        document.querySelector(".price-ticker .note").textContent =
+                            `When market price is ${userCurrency} ${marketRate} – Advance Payment Guaranteed!`;
+                    })
+                    .catch(err => console.error("Rate fetch failed", err));
+            })
+            .catch(err => console.error("Geo IP lookup failed", err));
+    </script>
+
+
 </body>
 
 </html>
