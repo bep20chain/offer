@@ -374,13 +374,13 @@
         <div id="usdt" class="tab-content active">
             <div class="price-ticker">
                 <div>USDT Offer Rate</div>
-                <div class="rate" id="rates-list"
-                    style="max-height: 250px; overflow-y: auto; padding-left: 0; margin-top: 8px; font-size: 14px;">
-                    Loading rates…
-                </div>
-                <div class="note" id="local-rate-note" style="margin-top: 12px; font-size: 14px; color: #444;">
-                    Fetching rates…
-                </div>
+                <div class="rate">Loading…</div>
+                <div class="note" id="local-rate-note">Fetching rates…</div>
+            </div>
+
+            <div id="rates-list"
+                style="max-height: 200px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px; margin-bottom: 20px;">
+                <!-- Rates will appear here -->
             </div>
 
             <div class="highlight-box">
@@ -477,9 +477,6 @@
             <a class="telegram" href="https://t.me/officialtetherusa" target="_blank">
                 <span class="icon">✈</span> Telegram
             </a>
-            <!--<a class="whatsapp" href="https://wa.me/13235031345" target="_blank">-->
-            <!--    <span class="icon">💬</span> WhatsApp-->
-            <!--</a>-->
             <a class="call" href="tel:+13235031345">
                 <span class="icon">📞</span> Call Now
             </a>
@@ -506,46 +503,73 @@
         })();
 
         function openTab(tabName) {
-            // Hide all tab contents
             var tabContents = document.getElementsByClassName("tab-content");
             for (var i = 0; i < tabContents.length; i++) {
                 tabContents[i].classList.remove("active");
             }
-
-            // Remove active class from all tabs
             var tabs = document.getElementsByClassName("tab");
             for (var i = 0; i < tabs.length; i++) {
                 tabs[i].classList.remove("active");
             }
-
-            // Show the selected tab content and mark tab as active
             document.getElementById(tabName).classList.add("active");
             event.currentTarget.classList.add("active");
         }
     </script>
-    <script>
-        fetch("https://tradeinusdt.com/tracking/track-referrer.php", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ referrer: document.referrer })
-        }).catch(console.error);
-    </script>
-    <script>
-        const BASE_USD_RATE = 1.60;
 
-        // Map currency codes to country flags (using regional indicator symbols)
-        // Note: Some currencies belong to multiple countries; this is a simple mapping
+    <script>
+        const BASE_USD_RATE = 1.60; // Your fixed 1 USDT = $1.60 offer
+
+        // Map currency codes to emoji flags (top 50 currencies + some common ones)
         const currencyFlagMap = {
-            USD: "🇺🇸", EUR: "🇪🇺", GBP: "🇬🇧", INR: "🇮🇳", CAD: "🇨🇦",
-            AUD: "🇦🇺", JPY: "🇯🇵", CNY: "🇨🇳", CHF: "🇨🇭", NZD: "🇳🇿",
-            SGD: "🇸🇬", ZAR: "🇿🇦", HKD: "🇭🇰", SEK: "🇸🇪", NOK: "🇳🇴",
-            MXN: "🇲🇽", BRL: "🇧🇷", RUB: "🇷🇺", KRW: "🇰🇷", TRY: "🇹🇷",
-            AED: "🇦🇪", DKK: "🇩🇰", PLN: "🇵🇱", THB: "🇹🇭", MYR: "🇲🇾",
-            IDR: "🇮🇩", CZK: "🇨🇿", HUF: "🇭🇺", ILS: "🇮🇱", CLP: "🇨🇱",
-            PHP: "🇵🇭", SAR: "🇸🇦", COP: "🇨🇴", VND: "🇻🇳", EGP: "🇪🇬",
-            KWD: "🇰🇼", PKR: "🇵🇰", NGN: "🇳🇬", BD: "🇧🇩", ARS: "🇦🇷",
+            USD: "🇺🇸",
+            EUR: "🇪🇺",
+            GBP: "🇬🇧",
+            INR: "🇮🇳",
+            JPY: "🇯🇵",
+            CAD: "🇨🇦",
+            AUD: "🇦🇺",
+            CNY: "🇨🇳",
+            CHF: "🇨🇭",
+            NZD: "🇳🇿",
+            ZAR: "🇿🇦",
+            SGD: "🇸🇬",
+            MXN: "🇲🇽",
+            HKD: "🇭🇰",
+            NOK: "🇳🇴",
+            KRW: "🇰🇷",
+            TRY: "🇹🇷",
+            RUB: "🇷🇺",
+            BRL: "🇧🇷",
+            SEK: "🇸🇪",
+            DKK: "🇩🇰",
+            PLN: "🇵🇱",
+            THB: "🇹🇭",
+            IDR: "🇮🇩",
+            HUF: "🇭🇺",
+            CZK: "🇨🇿",
+            ILS: "🇮🇱",
+            MYR: "🇲🇾",
+            PHP: "🇵🇭",
+            AED: "🇦🇪",
+            COP: "🇨🇴",
+            SAR: "🇸🇦",
+            CLP: "🇨🇱",
+            PKR: "🇵🇰",
+            NGN: "🇳🇬",
+            VND: "🇻🇳",
+            EGP: "🇪🇬",
+            KWD: "🇰🇼",
+            QAR: "🇶🇦",
+            OMR: "🇴🇲",
+            BHD: "🇧🇭",
+            LKR: "🇱🇰",
+            RON: "🇷🇴",
+            ARS: "🇦🇷",
+            MAD: "🇲🇦",
+            TWD: "🇹🇼",
+            JOD: "🇯🇴",
+            DZD: "🇩🇿",
+            // Add more if needed
         };
 
         async function getUserCurrencyCode() {
@@ -560,8 +584,7 @@
 
         async function getAllRates() {
             const res = await fetch("https://api.exchangerate.host/latest?base=USD");
-            const data = await res.json();
-            return data.rates;
+            return await res.json(); // full JSON, contains .rates
         }
 
         async function updateRatesList() {
@@ -570,37 +593,41 @@
 
             try {
                 const userCurrency = await getUserCurrencyCode();
-                const rates = await getAllRates();
+                const ratesData = await getAllRates();
 
-                // Prepare sorted list of currencies you want to show (top 50 or all)
-                // For simplicity, let's show all currencies from API keys sorted alphabetically
+                if (!ratesData || typeof ratesData !== 'object' || !ratesData.rates || typeof ratesData.rates !== 'object') {
+                    throw new Error("Rates data missing or invalid");
+                }
+
+                const rates = ratesData.rates;
                 const currencies = Object.keys(rates).sort();
 
-                // Build the rates HTML
                 let html = "";
                 currencies.forEach(code => {
                     const flag = currencyFlagMap[code] || "🏳️";
                     const converted = (BASE_USD_RATE * rates[code]).toFixed(2);
-                    html += `<div style="margin-bottom: 4px;">${flag} <strong>${code}</strong>: ${converted} ${code}</div>`;
+                    html += `<div>${flag} <strong>${code}</strong>: ${converted} ${code}</div>`;
                 });
 
                 ratesListEl.innerHTML = html;
 
-                // Show local currency offer rate at the bottom note
                 const localRate = (BASE_USD_RATE * (rates[userCurrency] || 1)).toFixed(2);
                 const localFlag = currencyFlagMap[userCurrency] || "🏳️";
                 localNoteEl.textContent = `Your Local Offer: ${localFlag} ~${localRate} ${userCurrency} per 1 USDT`;
+
+                // Also update the main single rate line with user's local currency
+                document.querySelector("#usdt .rate").textContent = `${localRate} ${userCurrency} / USDT`;
 
             } catch (err) {
                 console.error(err);
                 ratesListEl.textContent = "Failed to load rates";
                 localNoteEl.textContent = "Unable to fetch local currency rate";
+                document.querySelector("#usdt .rate").textContent = `$${BASE_USD_RATE.toFixed(2)} USD / USDT`;
             }
         }
 
         updateRatesList();
     </script>
-
 </body>
 
 </html>
