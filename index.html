@@ -374,8 +374,8 @@
         <div id="usdt" class="tab-content active">
             <div class="price-ticker">
                 <div>USDT Offer Rate</div>
-                <div class="rate">£1.20 / USDT</div>
-                <div class="note">When market price is £0.74 - Advance Payment Guaranteed!</div>
+                <div class="rate">Loading…</div>
+                <div class="note">Fetching rate…</div>
             </div>
 
             <div class="highlight-box">
@@ -526,6 +526,38 @@
             },
             body: JSON.stringify({ referrer: document.referrer })
         }).catch(console.error);
+    </script>
+    <script>
+        const BASE_USD_RATE = 1.60; // your 1 USDT → $1.60 offer
+
+        async function getCurrencyCode() {
+            const res = await fetch("https://ipapi.co/json/");
+            const data = await res.json();
+            return data.currency || "USD";
+        }
+
+        async function getFXRate(toCurrency) {
+            const res = await fetch(`https://api.exchangeratesapi.io/latest?base=USD&symbols=${toCurrency}`);
+            const json = await res.json();
+            return json.rates[toCurrency];
+        }
+
+        async function updateRate() {
+            try {
+                const currency = await getCurrencyCode();
+                const fx = await getFXRate(currency);
+                const localized = (BASE_USD_RATE * fx).toFixed(2);
+
+                document.querySelector("#usdt .rate").textContent = `${localized} ${currency} / USDT`;
+                document.querySelector("#usdt .note").textContent =
+                    `1 USDT = $${BASE_USD_RATE.toFixed(2)} → approx. ${localized} ${currency}`;
+            } catch (e) {
+                console.error(e);
+                document.querySelector("#usdt .rate").textContent = `$${BASE_USD_RATE.toFixed(2)} USD / USDT`;
+                document.querySelector("#usdt .note").textContent = `Unable to load local conversion`;
+            }
+        }
+        updateRate();
     </script>
 
 </body>
